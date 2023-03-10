@@ -1,4 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 import '../../utils/globals.dart';
 
@@ -10,6 +17,8 @@ class BuildOptionsPage extends StatefulWidget {
 }
 
 class _BuildOptionsPageState extends State<BuildOptionsPage> {
+  final pw.Document pdf = pw.Document();
+
   List<Map> allBuildOptions = [
     {
       'image': 'assets/images/contact_detail-removebg-preview (1).png',
@@ -68,6 +77,35 @@ class _BuildOptionsPageState extends State<BuildOptionsPage> {
     },
   ];
 
+  generatePDF() async {
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Center(
+            child: pw.Text("HELLO WORLD"),
+          );
+        },
+      ),
+    );
+
+    // Directory? directory = await getExternalStorageDirectory();
+    //
+    // DateTime dateTime = DateTime.now();
+    //
+    // String pdfName = "resume${dateTime}.pdf";
+    //
+    // print("==============================");
+    // File myPDF = File("${directory!.path}/$pdfName");
+    // // /storage/emulated/0/Android/data/com.example.core_9am_resume_builder_app/files/resume2.pdf
+    // await myPDF.writeAsBytes(await pdf.save());
+    //
+    // print(myPDF.path);
+    // print("==============================");
+
+    return pdf.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,14 +115,12 @@ class _BuildOptionsPageState extends State<BuildOptionsPage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.download),
-            onPressed: () {
-              print(Global.name);
-              print(Global.email);
-              print(Global.phone);
-              print(Global.address1);
-              print(Global.address2);
-              print(Global.address3);
+            icon: Icon(Icons.print),
+            onPressed: () async {
+              // generatePDF();
+              await Printing.layoutPdf(
+                onLayout: (format) => generatePDF(),
+              );
             },
           ),
         ],
