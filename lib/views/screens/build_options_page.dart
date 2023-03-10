@@ -17,8 +17,6 @@ class BuildOptionsPage extends StatefulWidget {
 }
 
 class _BuildOptionsPageState extends State<BuildOptionsPage> {
-  final pw.Document pdf = pw.Document();
-
   List<Map> allBuildOptions = [
     {
       'image': 'assets/images/contact_detail-removebg-preview (1).png',
@@ -77,7 +75,9 @@ class _BuildOptionsPageState extends State<BuildOptionsPage> {
     },
   ];
 
-  generatePDF() async {
+  Future<Uint8List> generatePDF() async {
+    final pw.Document pdf = pw.Document();
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -88,6 +88,8 @@ class _BuildOptionsPageState extends State<BuildOptionsPage> {
         },
       ),
     );
+
+    return pdf.save();
 
     // Directory? directory = await getExternalStorageDirectory();
     //
@@ -102,8 +104,6 @@ class _BuildOptionsPageState extends State<BuildOptionsPage> {
     //
     // print(myPDF.path);
     // print("==============================");
-
-    return pdf.save();
   }
 
   @override
